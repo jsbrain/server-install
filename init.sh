@@ -20,6 +20,8 @@ echo "\n********************************\n********************************\n"
 
 # make zsh default shell
 chsh -s $(which zsh)
+# an run it
+zsh
 
 # install oh-my-zsh and skip promtps without setting zsh default (CHSH=no)
 yes | curl -L https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh | CHSH=no sh
@@ -52,3 +54,9 @@ yes | curl https://releases.rancher.com/install-docker/19.03.sh | sh
 curl -L "https://github.com/docker/compose/releases/download/1.25.4/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
 # apply permissions
 chmod +x /usr/local/bin/docker-compose
+
+echo "\n********************************\n********************************\n"
+echo ">>> DOCKER(-COMPOSE) INSTALLED"
+echo "\n********************************\n********************************\n"
+
+echo "***** Script Done! *****"
