@@ -20,8 +20,6 @@ echo "\n********************************\n********************************\n"
 
 # make zsh default shell
 chsh -s $(which zsh)
-# an run it
-zsh
 
 # install oh-my-zsh and skip promtps without setting zsh default (CHSH=no)
 yes | curl -L https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh | CHSH=no sh
