@@ -45,7 +45,7 @@ sed -i 's/sudo//g' lzd_install.sh
 bash lzd_install.sh
 rm lzd_install.sh
 
-# install rancher
+# install docker
 yes | curl https://releases.rancher.com/install-docker/19.03.sh | sh
 
 # install compose
