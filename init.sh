@@ -87,6 +87,7 @@ if [ $INSTALL_COMPOSE -eq 1 ]
 then installLazy
 fi
 
+
 # install docker with rancher install script
 yes | curl https://releases.rancher.com/install-docker/19.03.sh | sh
 
