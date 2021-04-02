@@ -89,7 +89,7 @@ fi
 
 
 # install docker with rancher install script
-yes | curl https://releases.rancher.com/install-docker/19.03.sh | sh
+yes | curl https://releases.rancher.com/install-docker/20.10.sh | sh
 
 echo "\n********************************\n********************************\n"
 echo ">>> DOCKER INSTALLED"
