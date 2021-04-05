@@ -2,8 +2,10 @@
 #
 # Perform basic Ubuntu server installation.
 
-## Flags including default values
 
+#######################################
+# Flags including default values
+# ....................
 # Flag to determine if docker-compose should be installed
 INSTALL_COMPOSE=0
 # Flag to determine if lazygit and lazydocker should be installed
@@ -15,10 +17,10 @@ SKIP_BASIC=0
 # Flag to determine if swap should be installed and which size
 INSTALL_SWAP=2 # 2GB
 
-
-
+#######################################
 # Output color variables
 # Usage: echo "${red}red text ${green}green text${reset}"
+# ....................
 black=`tput setaf 0`
 red=`tput setaf 1`
 green=`tput setaf 2`
