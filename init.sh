@@ -229,13 +229,18 @@ fi
 
 
 function installSwap() {
+  # Disable swap if present
+  swapoff -v /swapfile
+  # Remove existing swapfile entries from fstab
+  sed -i '/\/swapfile swap swap/c\' /etc/fstab | sh
+  # Delete swapfile
+  rm /swapfile
+  # Now allocate new swap file size
   echo "fallocate -l ${INSTALL_SWAP}G /swapfile" | sh
   chmod 600 /swapfile
   mkswap /swapfile
   swapon /swapfile
-  # Remove existing swapfile entries
-  sed -i '/\/swapfile swap swap/c\' /etc/fstab | sh
-  # and set new one
+  # Now set new swap entry in fstab
   echo "/swapfile swap swap defaults 0 0" >> /etc/fstab | sh
   echo "\n********************************\n********************************\n"
   echo ">>> ${INSTALL_SWAP}GB SWAP ACTIVATED"
