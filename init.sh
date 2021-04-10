@@ -20,22 +20,19 @@ INSTALL_SWAP=2 # 2GB
 # Output color variables
 # Usage: echo "${red}red text ${green}green text${reset}"
 # ....................
-black=$(tput setaf 0)
-red=$(tput setaf 1)
-green=$(tput setaf 2)
-yellow=$(tput setaf 3)
-blue=$(tput setaf 4)
-magenta=$(tput setaf 5)
-cyan=$(tput setaf 6)
-white=$(tput setaf 7)
-reset=$(tput sgr0) # Reset all styles
-bell=$(tput bel)   # Play a bell (beep) sound 🔔
-bold=$(tput bold)  # Select bold mode
-under=$(tput smul) # Enable underline mode
-invert=$(
-  tput setab 7
-  tput setaf 0
-) # Bg white, fg black
+black="$(tput setaf 0)"
+red="$(tput setaf 1)"
+green="$(tput setaf 2)"
+yellow="$(tput setaf 3)"
+blue="$(tput setaf 4)"
+magenta="$(tput setaf 5)"
+cyan="$(tput setaf 6)"
+white="$(tput setaf 7)"
+reset="$(tput sgr0)"             # Reset all styles
+bell="$(tput bel)"               # Play a bell (beep) sound 🔔
+bold="$(tput bold)"              # Select bold mode
+under="$(tput smul)"             # Enable underline mode
+invert="$(tput setab 7${black})" # Bg white, fg black
 
 #######################################
 # Print arguments help.
