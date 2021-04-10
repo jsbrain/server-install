@@ -78,7 +78,7 @@ function parseFlag() {
   fi
   # Echo to stdout so return value can be assigned (e.g. func_result="$(parseFlag $1)")
   # ! NOTE: Cannot use echo at any other place before or return value will change!
-  echo "${val}"
+  echo -e "${val}"
 }
 
 #######################################
@@ -113,7 +113,7 @@ function validateInput() {
   if [[ "${input_valid}" == 1 ]]; then
     return 0
   else
-    echo "${bell}${red}ERROR: Invalid input $1, expected: ${valid_values}${reset}"
+    echo -e "${bell}${red}ERROR: Invalid input $1, expected: ${valid_values}${reset}"
     exit 1
   fi
 }
@@ -157,7 +157,7 @@ while test $# -gt 0; do
   --only) disableAllTasks ;;
   --help) helpFunction ;;
   --*)
-    echo "${red}Bad option $1${reset}"
+    echo -e "${red}Bad option $1${reset}"
     exit 1
     ;;
     # -id)
@@ -191,13 +191,13 @@ function installBasic() {
 
   # set libssl to restart without asking (gui promt)
   # for all packages use wildcard eg '* libraries/restart-...'
-  echo 'libssl1.1 libraries/restart-without-asking boolean true' | debconf-set-selections
+  echo -e 'libssl1.1 libraries/restart-without-asking boolean true' | debconf-set-selections
   # install necessary packages in noninteractive mode
   yes | DEBIAN_FRONTEND=noninteractive apt-get update && apt install vim git curl iputils-ping util-linux open-iscsi lazygit zsh -y
 
-  echo "\n********************************\n********************************\n"
-  echo ">>> ALL DEFAULT PACKAGES INSTALLED"
-  echo "\n********************************\n********************************\n"
+  echo -e "\n********************************\n********************************\n"
+  echo -e ">>> ALL DEFAULT PACKAGES INSTALLED"
+  echo -e "\n********************************\n********************************\n"
 
   # make zsh default shell
   chsh -s $(which zsh)
@@ -209,14 +209,14 @@ function installBasic() {
   sed -i 's/robbyrussell/pygmalion/g' .zshrc | sh
   sed -zi 's/\n\s*git\s/git extract zsh z docker kubectl/g' .zshrc | sh
   # write server scripts dir to path
-  echo "path+=('/root/scripts/server')\n$(cat .zshrc)" >.zshrc | sh
+  echo -e "path+=('/root/scripts/server')\n$(cat .zshrc)" >.zshrc | sh
   # add aliases
-  echo "alias lg=lazygit\n$(cat .zshrc)" >.zshrc | sh
-  echo "alias lzd=lazydocker\n$(cat .zshrc)" >.zshrc | sh
+  echo -e "alias lg=lazygit\n$(cat .zshrc)" >.zshrc | sh
+  echo -e "alias lzd=lazydocker\n$(cat .zshrc)" >.zshrc | sh
 
-  echo "\n********************************\n********************************\n"
-  echo ">>> ZSH INITIALIZED"
-  echo "\n********************************\n********************************\n"
+  echo -e "\n********************************\n********************************\n"
+  echo -e ">>> ZSH INITIALIZED"
+  echo -e "\n********************************\n********************************\n"
 }
 
 if [[ "${SKIP_BASIC}" -eq 0 ]]; then
@@ -233,15 +233,15 @@ function installSwap() {
   # Delete swapfile
   rm /swapfile
   # Now allocate new swap file size
-  echo "fallocate -l ${INSTALL_SWAP}G /swapfile" | sh
+  echo -e "fallocate -l ${INSTALL_SWAP}G /swapfile" | sh
   chmod 600 /swapfile
   mkswap /swapfile
   swapon /swapfile
   # Now set new swap entry in fstab
-  echo "/swapfile swap swap defaults 0 0" >>/etc/fstab | sh
-  echo "\n********************************\n********************************\n"
-  echo ">>> ${INSTALL_SWAP}GB SWAP ACTIVATED"
-  echo "\n********************************\n********************************\n"
+  echo -e "/swapfile swap swap defaults 0 0" >>/etc/fstab | sh
+  echo -e "\n********************************\n********************************\n"
+  echo -e ">>> ${INSTALL_SWAP}GB SWAP ACTIVATED"
+  echo -e "\n********************************\n********************************\n"
 }
 
 if [[ "${INSTALL_SWAP}" > 0 ]]; then
@@ -258,9 +258,9 @@ function installLazy() {
   sed -i 's/sudo//g' lzd_install.sh
   bash lzd_install.sh
   rm lzd_install.sh
-  echo "\n********************************\n********************************\n"
-  echo ">>> LAZYGIT AND LAZYDOCKER INSTALLED"
-  echo "\n********************************\n********************************\n"
+  echo -e "\n********************************\n********************************\n"
+  echo -e ">>> LAZYGIT AND LAZYDOCKER INSTALLED"
+  echo -e "\n********************************\n********************************\n"
 }
 
 if [[ "${INSTALL_LAZY}" -eq 1 ]]; then
@@ -280,9 +280,9 @@ function installDocker() {
     message="v20.10"
   fi
 
-  echo "\n********************************\n********************************\n"
-  echo ">>> DOCKER ${message} INSTALLED"
-  echo "\n********************************\n********************************\n"
+  echo -e "\n********************************\n********************************\n"
+  echo -e ">>> DOCKER ${message} INSTALLED"
+  echo -e "\n********************************\n********************************\n"
 }
 
 if [[ "${INSTALL_DOCKER}" > 0 ]]; then
@@ -297,9 +297,9 @@ function installCompose() {
   # apply permissions
   chmod +x /usr/local/bin/docker-compose
 
-  echo "\n********************************\n********************************\n"
-  echo ">>> DOCKER-COMPOSE INSTALLED"
-  echo "\n********************************\n********************************\n"
+  echo -e "\n********************************\n********************************\n"
+  echo -e ">>> DOCKER-COMPOSE INSTALLED"
+  echo -e "\n********************************\n********************************\n"
 }
 
 if [[ "${INSTALL_COMPOSE}" -eq 1 ]]; then
@@ -308,5 +308,5 @@ fi
 
 # ═══════════════════════════════════════════•°• :success: •°•═══════════════════════════════════════════
 
-echo "***** Script Done! *****\n"
+echo -e "***** Script Done! *****\n"
 exit 0 # Success
