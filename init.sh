@@ -1,7 +1,6 @@
-#!/bin/bash
+#!/bin/sh
 #
 # Perform basic Ubuntu server installation.
-
 
 #######################################
 # Flags including default values
@@ -21,20 +20,22 @@ INSTALL_SWAP=2 # 2GB
 # Output color variables
 # Usage: echo "${red}red text ${green}green text${reset}"
 # ....................
-black=`tput setaf 0`
-red=`tput setaf 1`
-green=`tput setaf 2`
-yellow=`tput setaf 3`
-blue=`tput setaf 4`
-magenta=`tput setaf 5`
-cyan=`tput setaf 6`
-white=`tput setaf 7`
-reset=`tput sgr0` # Reset all styles
-bell=`tput bel`   # Play a bell (beep) sound 🔔
-bold=`tput bold`  # Select bold mode
-under=`tput smul` # Enable underline mode
-invert=`tput setab 7; tput setaf 0` # Bg white, fg black
-
+black=$(tput setaf 0)
+red=$(tput setaf 1)
+green=$(tput setaf 2)
+yellow=$(tput setaf 3)
+blue=$(tput setaf 4)
+magenta=$(tput setaf 5)
+cyan=$(tput setaf 6)
+white=$(tput setaf 7)
+reset=$(tput sgr0) # Reset all styles
+bell=$(tput bel)   # Play a bell (beep) sound 🔔
+bold=$(tput bold)  # Select bold mode
+under=$(tput smul) # Enable underline mode
+invert=$(
+  tput setab 7
+  tput setaf 0
+) # Bg white, fg black
 
 #######################################
 # Print arguments help.
@@ -42,18 +43,19 @@ invert=`tput setab 7; tput setaf 0` # Bg white, fg black
 #   None
 #######################################
 function helpFunction() {
-  echo "\n${bold}Usage:${reset}"
-  echo "\t./$0 --flagA --flagB=0 --with-docker=19 ... | --help"
-  echo "${bold}Synopsis:${reset}"
-  echo "\t--with-compose\tInclude Docker-Compose, ${under}default: ${INSTALL_COMPOSE}${reset}"
-  echo "\t--with-lazy\tInclude lazygit and lazydocker, ${under}default: ${INSTALL_LAZY}${reset}"
-  echo "\t--with-docker\tInstall docker, can specify version e.g. --with-docker=19, ${under}default: ${INSTALL_DOCKER}${reset}"
-  echo "\t\t\tvalues: [0 | 19 | 20]${reset}"
-  echo "\t--with-swap\tAdd swapfile, ${under}default: ${INSTALL_SWAP}(GB)${reset}"
-  echo "\t\t\tvalues: [0 | 1 | 2 | 4 | 6 | 8]${reset}"
-  echo "\t--skip-basic\tSkip basic installation (git, zsh, utils), ${under}default: ${SKIP_BASIC}${reset}"
-  echo "\t--only\t\tDisable all default flags, run only provided tasks. ${bold}MUST be the first argument!${reset}"
-  echo "\t--help\t\tShow usage help"
+  # Use $"..." to enable proper backslash escape handling (tab, newline, etc.)
+  echo $"\n${bold}Usage:${reset}"
+  echo $"\t$0 --flagA --flagB=0 --with-docker=19 ... | --help"
+  echo $"${bold}Synopsis:${reset}"
+  echo $"\t--with-compose\tInclude Docker-Compose, ${under}default: ${INSTALL_COMPOSE}${reset}"
+  echo $"\t--with-lazy\tInclude lazygit and lazydocker, ${under}default: ${INSTALL_LAZY}${reset}"
+  echo $"\t--with-docker\tInstall docker, can specify version e.g. --with-docker=19, ${under}default: ${INSTALL_DOCKER}${reset}"
+  echo $"\t\t\tvalues: [0 | 19 | 20]${reset}"
+  echo $"\t--with-swap\tAdd swapfile, ${under}default: ${INSTALL_SWAP}(GB)${reset}"
+  echo $"\t\t\tvalues: [0 | 1 | 2 | 4 | 6 | 8]${reset}"
+  echo $"\t--skip-basic\tUse to skip basic installation (git, zsh, utils), ${under}default: ${SKIP_BASIC}${reset}"
+  echo $"\t--only\t\tDisable all default flags, run only provided tasks. ${bold}MUST be the first argument!${reset}"
+  echo $"\t--help\t\tShow usage help"
   exit 1 # Exit script after printing help
 }
 
@@ -68,7 +70,7 @@ function helpFunction() {
 #   if provided, otherwise will be set to 'true' (1).
 #######################################
 function parseFlag() {
-  local val=`echo $1 | sed -e 's/^[^=]*=//g'`
+  local val=$(echo $1 | sed -e 's/^[^=]*=//g')
   if [[ "${val}" == "$1" ]]; then
     if [[ "$#" -eq 2 ]]; then
       val=$2
@@ -93,7 +95,8 @@ function validateInput() {
   # ? NOTE: Local declaration and assignment should be on different lines (see https://google.github.io/styleguide/shellguide.html#use-local-variables)
   local val
   val="$(parseFlag $1 $2)"
-  shift; shift # Double shift here so our testing values begin at $1
+  shift
+  shift               # Double shift here so our testing values begin at $1
   local input_valid=0 # <- Here it's ok :)
   local valid_values="$1"
 
@@ -118,7 +121,6 @@ function validateInput() {
   fi
 }
 
-
 # Disable all flags so no tasks will run.
 function disableAllTasks() {
   INSTALL_COMPOSE=0
@@ -128,35 +130,39 @@ function disableAllTasks() {
   INSTALL_SWAP=0
 }
 
-
 # ════════════════════════════════════════════•°• :start: •°•════════════════════════════════════════════
 
-
 # Idiomatic parameter and option handling
-while test $# -gt 0
-do
+while test $# -gt 0; do
   case "$1" in
-    --with-docker*)
-      validateInput $1 $INSTALL_DOCKER 0 19 20 # value + default value + n valid values
-      if (( $? == 0 )); then # For demo only, we actually don't need to check return value here.
-        INSTALL_DOCKER="$(parseFlag $1)"
-      fi
-      ;;
-    --with-compose*) validateInput $1 $INSTALL_COMPOSE 0 1
-      INSTALL_COMPOSE="$(parseFlag $1)"
-      ;;
-    --with-lazy*) validateInput $1 $INSTALL_LAZY 0 1
-      INSTALL_LAZY="$(parseFlag $1)"
-      ;;
-    --with-swap*) validateInput $1 $INSTALL_SWAP 0 1 2 4 6 8
-      INSTALL_SWAP="$(parseFlag $1)"
-      ;;
-    --skip-basic*) validateInput $1 $SKIP_BASIC 0 1
-      SKIP_BASIC="$(parseFlag $1)"
-      ;;
-    --only) disableAllTasks ;;
-    --help) helpFunction ;;
-    --*) echo "${red}Bad option $1${reset}"; exit 1 ;;
+  --with-docker*)
+    validateInput $1 $INSTALL_DOCKER 0 19 20 # value + default value + n valid values
+    if (($? == 0)); then                     # For demo only, we actually don't need to check return value here.
+      INSTALL_DOCKER="$(parseFlag $1)"
+    fi
+    ;;
+  --with-compose*)
+    validateInput $1 $INSTALL_COMPOSE 0 1
+    INSTALL_COMPOSE="$(parseFlag $1)"
+    ;;
+  --with-lazy*)
+    validateInput $1 $INSTALL_LAZY 0 1
+    INSTALL_LAZY="$(parseFlag $1)"
+    ;;
+  --with-swap*)
+    validateInput $1 $INSTALL_SWAP 0 1 2 4 6 8
+    INSTALL_SWAP="$(parseFlag $1)"
+    ;;
+  --skip-basic*)
+    validateInput $1 $SKIP_BASIC 0 1
+    SKIP_BASIC="$(parseFlag $1)"
+    ;;
+  --only) disableAllTasks ;;
+  --help) helpFunction ;;
+  --*)
+    echo "${red}Bad option $1${reset}"
+    exit 1
+    ;;
     # -id)
     #   # Use to parse args in format: -n filename
     #   shift
@@ -172,12 +178,10 @@ do
   shift
 done
 
-
 # echo "\n${red}******** STOP *********${reset}"
 # exit 1
 
 # ∘₊✧─────────────────────────────────────────────────────────────────────────────────────────────────✧₊∘
-
 
 function installBasic() {
   # add repositories
@@ -192,12 +196,11 @@ function installBasic() {
   # for all packages use wildcard eg '* libraries/restart-...'
   echo 'libssl1.1 libraries/restart-without-asking boolean true' | debconf-set-selections
   # install necessary packages in noninteractive mode
-  yes | DEBIAN_FRONTEND=noninteractive apt-get update && apt install vim git curl iputils-ping util-linux open-iscsi lazygit zsh -y 
+  yes | DEBIAN_FRONTEND=noninteractive apt-get update && apt install vim git curl iputils-ping util-linux open-iscsi lazygit zsh -y
 
   echo "\n********************************\n********************************\n"
   echo ">>> ALL DEFAULT PACKAGES INSTALLED"
   echo "\n********************************\n********************************\n"
-
 
   # make zsh default shell
   chsh -s $(which zsh)
@@ -209,24 +212,21 @@ function installBasic() {
   sed -i 's/robbyrussell/pygmalion/g' .zshrc | sh
   sed -zi 's/\n\s*git\s/git extract zsh z docker kubectl/g' .zshrc | sh
   # write server scripts dir to path
-  echo "path+=('/root/scripts/server')\n$(cat .zshrc)" > .zshrc | sh
+  echo "path+=('/root/scripts/server')\n$(cat .zshrc)" >.zshrc | sh
   # add aliases
-  echo "alias lg=lazygit\n$(cat .zshrc)" > .zshrc | sh
-  echo "alias lzd=lazydocker\n$(cat .zshrc)" > .zshrc | sh
-
+  echo "alias lg=lazygit\n$(cat .zshrc)" >.zshrc | sh
+  echo "alias lzd=lazydocker\n$(cat .zshrc)" >.zshrc | sh
 
   echo "\n********************************\n********************************\n"
   echo ">>> ZSH INITIALIZED"
   echo "\n********************************\n********************************\n"
 }
 
-if [[ "${INSTALL_BASIC}" -eq 1 ]]; then
+if [[ "${SKIP_BASIC}" -eq 0 ]]; then
   installBasic
 fi
 
-
 # ∘₊✧─────────────────────────────────────────────────────────────────────────────────────────────────✧₊∘
-
 
 function installSwap() {
   # Disable swap if present
@@ -241,7 +241,7 @@ function installSwap() {
   mkswap /swapfile
   swapon /swapfile
   # Now set new swap entry in fstab
-  echo "/swapfile swap swap defaults 0 0" >> /etc/fstab | sh
+  echo "/swapfile swap swap defaults 0 0" >>/etc/fstab | sh
   echo "\n********************************\n********************************\n"
   echo ">>> ${INSTALL_SWAP}GB SWAP ACTIVATED"
   echo "\n********************************\n********************************\n"
@@ -251,15 +251,13 @@ if [[ "${INSTALL_SWAP}" > 0 ]]; then
   installSwap
 fi
 
-
 # ∘₊✧─────────────────────────────────────────────────────────────────────────────────────────────────✧₊∘
-
 
 function installLazy() {
   # install lazygit
   yes | lazygit
   # install lazydocker
-  curl https://raw.githubusercontent.com/jesseduffield/lazydocker/master/scripts/install_update_linux.sh > lzd_install.sh
+  curl https://raw.githubusercontent.com/jesseduffield/lazydocker/master/scripts/install_update_linux.sh >lzd_install.sh
   sed -i 's/sudo//g' lzd_install.sh
   bash lzd_install.sh
   rm lzd_install.sh
@@ -272,9 +270,7 @@ if [[ "${INSTALL_LAZY}" -eq 1 ]]; then
   installLazy
 fi
 
-
 # ∘₊✧─────────────────────────────────────────────────────────────────────────────────────────────────✧₊∘
-
 
 function installDocker() {
   # install docker with rancher install script
@@ -296,9 +292,7 @@ if [[ "${INSTALL_DOCKER}" > 0 ]]; then
   installDocker
 fi
 
-
 # ∘₊✧─────────────────────────────────────────────────────────────────────────────────────────────────✧₊∘
-
 
 function installCompose() {
   # install compose
@@ -315,9 +309,7 @@ if [[ "${INSTALL_COMPOSE}" -eq 1 ]]; then
   installCompose
 fi
 
-
 # ═══════════════════════════════════════════•°• :success: •°•═══════════════════════════════════════════
-
 
 echo "***** Script Done! *****\n"
 exit 0 # Success
