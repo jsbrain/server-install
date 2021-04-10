@@ -136,7 +136,7 @@ function disableAllTasks() {
 while test $# -gt 0
 do
   case "$1" in
-    --install-docker*)
+    --with-docker*)
       validateInput $1 $INSTALL_DOCKER 0 19 20 # value + default value + n valid values
       if (( $? == 0 )); then # For demo only, we actually don't need to check return value here.
         INSTALL_DOCKER="$(parseFlag $1)"
