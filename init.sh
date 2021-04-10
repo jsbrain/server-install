@@ -42,20 +42,20 @@ invert=$(
 # Arguments:
 #   None
 #######################################
-function helpFunction() {
+helpFunction() {
   # Use $"..." to enable proper backslash escape handling (tab, newline, etc.)
-  echo $"\n${bold}Usage:${reset}"
-  echo $"\t$0 --flagA --flagB=0 --with-docker=19 ... | --help"
-  echo $"${bold}Synopsis:${reset}"
-  echo $"\t--with-compose\tInclude Docker-Compose, ${under}default: ${INSTALL_COMPOSE}${reset}"
-  echo $"\t--with-lazy\tInclude lazygit and lazydocker, ${under}default: ${INSTALL_LAZY}${reset}"
-  echo $"\t--with-docker\tInstall docker, can specify version e.g. --with-docker=19, ${under}default: ${INSTALL_DOCKER}${reset}"
-  echo $"\t\t\tvalues: [0 | 19 | 20]${reset}"
-  echo $"\t--with-swap\tAdd swapfile, ${under}default: ${INSTALL_SWAP}(GB)${reset}"
-  echo $"\t\t\tvalues: [0 | 1 | 2 | 4 | 6 | 8]${reset}"
-  echo $"\t--skip-basic\tUse to skip basic installation (git, zsh, utils), ${under}default: ${SKIP_BASIC}${reset}"
-  echo $"\t--only\t\tDisable all default flags, run only provided tasks. ${bold}MUST be the first argument!${reset}"
-  echo $"\t--help\t\tShow usage help"
+  echo "\n${bold}Usage:${reset}"
+  echo "\t$0 --flagA --flagB=0 --with-docker=19 ... | --help"
+  echo "${bold}Synopsis:${reset}"
+  echo "\t--with-compose\tInclude Docker-Compose, ${under}default: ${INSTALL_COMPOSE}${reset}"
+  echo "\t--with-lazy\tInclude lazygit and lazydocker, ${under}default: ${INSTALL_LAZY}${reset}"
+  echo "\t--with-docker\tInstall docker, can specify version e.g. --with-docker=19, ${under}default: ${INSTALL_DOCKER}${reset}"
+  echo "\t\t\tvalues: [0 | 19 | 20]${reset}"
+  echo "\t--with-swap\tAdd swapfile, ${under}default: ${INSTALL_SWAP}(GB)${reset}"
+  echo "\t\t\tvalues: [0 | 1 | 2 | 4 | 6 | 8]${reset}"
+  echo "\t--skip-basic\tUse to skip basic installation (git, zsh, utils), ${under}default: ${SKIP_BASIC}${reset}"
+  echo "\t--only\t\tDisable all default flags, run only provided tasks. ${bold}MUST be the first argument!${reset}"
+  echo "\t--help\t\tShow usage help"
   exit 1 # Exit script after printing help
 }
 
@@ -69,7 +69,7 @@ function helpFunction() {
 #   Parsed value of the flag, if no flag is provided, flag is always set to default value ($2)
 #   if provided, otherwise will be set to 'true' (1).
 #######################################
-function parseFlag() {
+parseFlag() {
   local val=$(echo $1 | sed -e 's/^[^=]*=//g')
   if [[ "${val}" == "$1" ]]; then
     if [[ "$#" -eq 2 ]]; then
@@ -91,7 +91,7 @@ function parseFlag() {
 # Returns:
 #   0 if valid, throws and exits otherwise.
 #######################################
-function validateInput() {
+validateInput() {
   # ? NOTE: Local declaration and assignment should be on different lines (see https://google.github.io/styleguide/shellguide.html#use-local-variables)
   local val
   val="$(parseFlag $1 $2)"
@@ -122,7 +122,7 @@ function validateInput() {
 }
 
 # Disable all flags so no tasks will run.
-function disableAllTasks() {
+disableAllTasks() {
   INSTALL_COMPOSE=0
   INSTALL_LAZY=0
   INSTALL_DOCKER=0
@@ -183,7 +183,7 @@ done
 
 # ∘₊✧─────────────────────────────────────────────────────────────────────────────────────────────────✧₊∘
 
-function installBasic() {
+installBasic() {
   # add repositories
   # NOTE: yes is actually a command and streams a "y"
   # to EVERY promt of the piped command. If you want to
@@ -228,7 +228,7 @@ fi
 
 # ∘₊✧─────────────────────────────────────────────────────────────────────────────────────────────────✧₊∘
 
-function installSwap() {
+installSwap() {
   # Disable swap if present
   swapoff -v /swapfile
   # Remove existing swapfile entries from fstab
@@ -253,7 +253,7 @@ fi
 
 # ∘₊✧─────────────────────────────────────────────────────────────────────────────────────────────────✧₊∘
 
-function installLazy() {
+installLazy() {
   # install lazygit
   yes | lazygit
   # install lazydocker
@@ -272,7 +272,7 @@ fi
 
 # ∘₊✧─────────────────────────────────────────────────────────────────────────────────────────────────✧₊∘
 
-function installDocker() {
+installDocker() {
   # install docker with rancher install script
   local message
   if [[ "${INSTALL_DOCKER}" -eq 19 ]]; then
@@ -294,7 +294,7 @@ fi
 
 # ∘₊✧─────────────────────────────────────────────────────────────────────────────────────────────────✧₊∘
 
-function installCompose() {
+installCompose() {
   # install compose
   curl -L "https://github.com/docker/compose/releases/download/1.28.6/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
   # apply permissions
