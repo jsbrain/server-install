@@ -272,6 +272,7 @@ fi
 function installDocker() {
   # install docker with rancher install script
   local message
+  # Source: https://github.com/rancher/install-docker
   if [[ "${INSTALL_DOCKER}" -eq 19 ]]; then
     yes | curl https://releases.rancher.com/install-docker/19.03.sh | sh
     message="v19.03"
